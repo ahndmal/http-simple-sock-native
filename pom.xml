@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>com.andmal</groupId>
     <artifactId>http-sock-3</artifactId>
     <version>0.0.2</version>
 
@@ -26,7 +26,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.andmal.Main</mainClass>
+                                <mainClass>com.andmal.server.SimpleServer</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
@@ -70,6 +70,7 @@
                                 <buildArg>--verbose</buildArg>
                                 <!-- For Quick Build (22.1+) -->
                                 <buildArg>-Ob</buildArg>
+                                <buildArg>--enable-preview</buildArg>
                             </buildArgs>
                             <!-- Start: Workaround for 22.2: Disable the default Java Module Path using USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM -->
                             <!-- <environment>

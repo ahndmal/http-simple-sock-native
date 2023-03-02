@@ -1,11 +1,14 @@
-package com.andmal;
+package com.andmal.server;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Main {
+public class SimpleServer {
     public static void main(String[] args) {
+        init();
+    }
+    public static void init() {
         try {
             try (ServerSocket serverSocket = new ServerSocket(8080)) {
                 System.out.println(">>> Server started on port 8080");
@@ -22,7 +25,7 @@ public class Main {
 
                     writer.write("HTTP/1.1 200 OK\n");
                     writer.write("Content-Type: text/html\r\n\n");
-                    writer.write("<html>" +
+                    writer.write("<!doctype html><html>" +
                             "<head><title>Java</title></head>" +
                             "<body>" +
                             "<h2>Java Server</h2>" +
