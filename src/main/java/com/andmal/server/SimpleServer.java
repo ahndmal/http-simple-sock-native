@@ -25,13 +25,14 @@ public class SimpleServer {
 
                     writer.write("HTTP/1.1 200 OK\n");
                     writer.write("Content-Type: text/html\r\n\n");
-                    writer.write("<!doctype html><html>" +
-                            "<head><title>Java</title></head>" +
-                            "<body>" +
-                            "<h2>Java Server</h2>" +
-                            "<div>Test</div>" +
-                            "</body>" +
-                            "</html>");
+                    writer.write("""
+                            <!doctype html><html>
+                            <head><title>Java</title></head>
+                            <body>
+                            <h2>Java Server</h2>
+                            <div>Test</div>
+                            </body>
+                            </html>""");
 
                     System.out.println("request ended");
                     writer.close();
