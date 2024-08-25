@@ -13,46 +13,67 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class AsyncServer {
+
+    public static void main(String[] args) {
+        init();
+    }
+
     public static void init() {
         final String HOST = "localhost";
         final int PORT = 8080;
+
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
+
             AsynchronousChannelGroup group = AsynchronousChannelGroup.withThreadPool(executorService);
+
             try (AsynchronousServerSocketChannel asyncServer = AsynchronousServerSocketChannel.open(group)) {
+
                 asyncServer.bind(new InetSocketAddress(HOST, PORT));
                 System.out.println("[SERVER] Listening on " + HOST + ":" + PORT);
 
                 while (true) {
                     Future<AsynchronousSocketChannel> future = asyncServer.accept();
+
                     AsynchronousSocketChannel client = future.get();
                     System.out.println("[SERVER] Accepted connection from " + client.getRemoteAddress());
 
-                    ByteBuffer byteBuffer = ByteBuffer.allocate(200);
-                    StringBuilder data = new StringBuilder();
-                    data.append("HTTP/1.1 200 OK\r\n");
-                    data.append("Content-Type: text/html\n");
-                    data.append("Host: localhost");
-                    data.append("\r\n\r\n");
-                    char[] html = "<!doctype html><html><head><title>Java HTTP</title></head><body>Test...</body></html>".toCharArray();
-                    data.append(html);
-                    System.out.println(data.toString());
+                    String data = """
+                            HTTP/1.1 200 OK
+                            Date: Mon, 27 Jul 2009 12:28:53 GMT
+                            Server: Java
+                            Accept-Ranges: bytes
+                            Vary: Accept-Encoding
+                            Content-Type: text/plain
+                            
+                            Hello World! My content includes a trailing CRLF.
+                            """;
 
-                    byteBuffer.put(data.toString().getBytes());
-                    client.write(byteBuffer, byteBuffer, new CompletionHandler<Integer, ByteBuffer>() {
-                        @Override
-                        public void completed(Integer result, ByteBuffer attachment) {
-                            attachment.clear();
-                        }
+                    System.out.println(data);
 
-                        @Override
-                        public void failed(Throwable exc, ByteBuffer attachment) {
-                            System.err.println("[SERVER] Failed to read from client: " + exc);
-                            exc.printStackTrace();
-                        }
-                    });
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(data.getBytes());
 
-//                    client.close();
-//                    asyncServer.close();
+//                    byteBuffer.put(data.getBytes());
+
+                    client.write(byteBuffer);
+
+//                    client.write(byteBuffer, byteBuffer, new CompletionHandler<Integer, ByteBuffer>() {
+//                        @Override
+//                        public void completed(Integer result, ByteBuffer attachment) {
+//                            attachment.clear();
+//                        }
+//
+//                        @Override
+//                        public void failed(Throwable exc, ByteBuffer attachment) {
+//                            System.err.println("[SERVER] Failed to read from client: " + exc);
+//                            exc.printStackTrace();
+//                        }
+//                    });
+
+                    byteBuffer.clear();
+                    client.shutdownInput();
+                    client.shutdownOutput();
+
+                    client.close();
 
 //                    client.read(byteBuffer, byteBuffer, new CompletionHandler<Integer, ByteBuffer>() {
 //                        @Override
