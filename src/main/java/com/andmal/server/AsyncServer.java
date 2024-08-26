@@ -29,13 +29,14 @@ public class AsyncServer {
             try (AsynchronousServerSocketChannel asyncServer = AsynchronousServerSocketChannel.open(group)) {
 
                 asyncServer.bind(new InetSocketAddress(HOST, PORT));
-                System.out.println("[SERVER] Listening on " + HOST + ":" + PORT);
+                System.out.printf("[SERVER] Listening on %s : %d", HOST, PORT);
 
                 while (true) {
                     Future<AsynchronousSocketChannel> future = asyncServer.accept();
 
                     AsynchronousSocketChannel client = future.get();
-                    System.out.println("[SERVER] Accepted connection from " + client.getRemoteAddress());
+
+                    System.out.printf("[SERVER] Accepted connection from %s",client.getRemoteAddress());
 
                     String data = """
                             HTTP/1.1 200 OK
@@ -103,8 +104,8 @@ public class AsyncServer {
     }
 
     private static void onMessageReceived(AsynchronousSocketChannel client, ByteBuffer buffer) {
-        System.out.println("[SERVER] Received message from server: " + client);
-        System.out.println("[SERVER] Buffer: " + buffer);
-        System.out.println("[SERVER] Buffer: " + new String(buffer.array()));
+        System.out.printf("[SERVER] Received message from server: %s", client);
+        System.out.printf("[SERVER] Buffer: %s", buffer);
+        System.out.printf("[SERVER] Buffer: %s", new String(buffer.array()));
     }
 }
